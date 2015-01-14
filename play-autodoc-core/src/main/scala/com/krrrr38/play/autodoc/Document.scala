@@ -43,7 +43,7 @@ private[autodoc] case class Document[T](
       fw.close()
     }
 
-    play.api.Logger.info(s"Autodoc writes into $docFilePath : $title")
+    play.api.Logger.info(s"Autodoc writes $title in $className")
   }
 
   private def load(

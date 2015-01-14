@@ -1,13 +1,12 @@
+import com.krrrr38.play.autodoc.Caller
+import com.krrrr38.play.autodoc.Helpers._
 import controllers.api.Users.User
 import org.junit.runner._
 import org.specs2.mutable._
 import org.specs2.runner._
 import play.api.libs.json.Json
-import play.api.test._
 import play.api.test.Helpers._
-
-import com.krrrr38.play.autodoc.Caller
-import com.krrrr38.play.autodoc.Helpers._
+import play.api.test._
 
 @RunWith(classOf[JUnitRunner])
 class UsersSpec extends Specification {

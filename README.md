@@ -27,13 +27,17 @@ addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.0.1")
 ```
 
 ## Configuration
-In `build.sbt`
+In `build.sbt` / `project/Build.scala`, if you want change setting
 
 ```scala
-projectSettings ++= Seq(
-  PlayAutodocKeys.outputDirectory := "doc" // default: "doc"
-  PlayAutodocKeys.suppressedRequestHeader := Seq("X-Secret-Token") // default: Nil
-  PlayAutodocKeys.suppressedResponseHeader := Seq("X-Content-Type-Options") // default: Nil
+import com.krrrr38.play.autodoc.AutodocPlugin.AutodocKeys
+
+...
+  settings = Seq(
+    AutodocKeys.autodocOutputDirectory := "doc", // default "doc"
+    AutodocKeys.autodocSuppressedRequestHeaders := Seq("X-Secret-Token"), // default Nil
+    AutodocKeys.autodocSuppressedResponseHeaders := Nil // default Nil
+  )
 )
 ```
 

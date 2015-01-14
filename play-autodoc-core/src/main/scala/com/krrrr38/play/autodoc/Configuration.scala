@@ -12,6 +12,7 @@ object AutodocConfiguration {
   val AUTODOC_CONFIG_KEY = "autodoc."
   object Keys {
     val OUTPUT_DIRECTORY = AUTODOC_CONFIG_KEY + "outputDirectory"
+    val CACHE_DIRECTORY = AUTODOC_CONFIG_KEY + "cacheDirectory"
     val SUPPRESSED_REQUEST_HEADERS = AUTODOC_CONFIG_KEY + "suppressedRequestHeaders"
     val SUPPRESSED_RESPONSE_HEADERS = AUTODOC_CONFIG_KEY + "suppressedResponseHeaders"
   }
@@ -38,13 +39,12 @@ object AutodocConfiguration {
     }
   }
 
+  // if cache directory is set by sbt plugin, the plugin will try to merge them to output dir, so output into cache dir
   lazy val outputDirectory = {
-    val dir = config.getString(Keys.OUTPUT_DIRECTORY).getOrElse(Values.DEFAULT_OUTPUT_DIRECTORY)
-    if (dir.endsWith("/")) {
-      dir
-    } else {
-      dir + "/"
+    val outputDir = config.getString(Keys.CACHE_DIRECTORY).getOrElse {
+      config.getString(Keys.OUTPUT_DIRECTORY).getOrElse(Values.DEFAULT_OUTPUT_DIRECTORY)
     }
+    if (outputDir.endsWith("/")) outputDir else outputDir + "/"
   }
   lazy val suppressedRequestHeaders = config.getStringSeq(Keys.SUPPRESSED_REQUEST_HEADERS).getOrElse(Values.DEFAULT_SUPPRESSED_REQUEST_HEADERS)
   lazy val suppressedResponseHeaders = config.getStringSeq(Keys.SUPPRESSED_RESPONSE_HEADERS).getOrElse(Values.DEFAULT_SUPPRESSED_RESPONSE_HEADERS)
