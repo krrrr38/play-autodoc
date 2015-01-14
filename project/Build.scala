@@ -23,7 +23,6 @@ object BuildSettings {
     com.typesafe.sbt.SbtScalariform.scalariformSettings ++ Seq(
       organization := "com.krrrr38",
       scalaVersion := "2.10.4",
-      crossScalaVersions := scalaVersion.value :: "2.11.4" :: Nil,
       version := "0.0.1",
       scalacOptions ++= (
         "-deprecation" ::
@@ -85,6 +84,7 @@ object PlayAutodocBuild extends Build {
     settings = buildSettings ++ publishSettings ++ Seq(
       name := "play-autodoc-core",
       description := "Generate documentation from your play application request tests.",
+      crossScalaVersions := scalaVersion.value :: "2.11.4" :: Nil,
       resolvers += typesafe,
       libraryDependencies ++= Seq(
         playTest, scalaTest

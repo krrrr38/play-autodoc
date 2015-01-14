@@ -5,8 +5,6 @@ Play 2.x Scala port of [autodoc](https://github.com/r7kamura/autodoc/)
 
 **Now only support Play 2.3.x**
 
-:skull: UNDER DEVELOPMENT & Not Released yet :skull:
-
 ## Description
 Generate documentation from your Play application.
 
@@ -25,6 +23,13 @@ resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
 
 addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.0.1")
 ```
+
+`build.sbt`
+```scala
+resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
+```
+
+sbt plugin automatically add libraryDependency, so you also need to resolver in `build.sbt`.
 
 ## Configuration
 In `build.sbt` / `project/Build.scala`, if you want change setting
