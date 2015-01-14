@@ -61,7 +61,6 @@ object AutodocPlugin extends sbt.AutoPlugin {
     autodocCacheDirectory := IO.relativize(baseDirectory.value, target(_ / "autodoc-cache").value).getOrElse(AutodocDefaults.autodocCacheDirectory),
     autodocSuppressedRequestHeaders := (autodocSuppressedRequestHeaders ?? AutodocDefaults.autodocSuppressedRequestHeaders).value,
     autodocSuppressedResponseHeaders := (autodocSuppressedResponseHeaders ?? AutodocDefaults.autodocSuppressedResponseHeaders).value,
-    // (compile in Test) <<= (compile in Test) dependsOn
     test <<= test.result.map { result => // XXX is it possible to get outputdir and cachedir setting values in here?
       Tasks.moveFile(file(setting.cacheDir), file(setting.outputDir))
     } dependsOn (autodocClean, autodocConfGen, autodocSaveSetting),

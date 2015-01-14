@@ -17,6 +17,7 @@ object PlayScalaBuild extends Build {
           "-Xlint" ::
           Nil
         ),
+      resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/",
       AutodocKeys.autodocOutputDirectory := "doc",
       AutodocKeys.autodocSuppressedRequestHeaders := Seq("X-Secret-Token"),
       AutodocKeys.autodocSuppressedResponseHeaders := Nil
