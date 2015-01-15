@@ -24,13 +24,6 @@ resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
 addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.0.1")
 ```
 
-`build.sbt`
-```scala
-resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
-```
-
-sbt plugin automatically add libraryDependency, so you also need to resolver in `build.sbt`.
-
 ## Configuration
 In `build.sbt` / `project/Build.scala`, if you want change setting
 

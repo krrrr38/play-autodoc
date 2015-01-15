@@ -34,6 +34,7 @@ object AutodocPlugin extends sbt.AutoPlugin {
   override def projectConfigurations: Seq[Configuration] = Seq(Autodoc)
 
   override def projectSettings: Seq[Def.Setting[_]] = autodocSettings ++ Seq(
+    resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/",
     libraryDependencies += "com.krrrr38" %% "play-autodoc-core" % (autodocVersion in Autodoc).value % "test"
   )
 
