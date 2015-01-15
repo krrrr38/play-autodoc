@@ -11,8 +11,8 @@ import play.api.test.FakeApplication
 import play.api.test._
 import play.api.test.Helpers._
 
-class HelpersSpec extends FunSpec with Matchers with BeforeAndAfterAll {
-  val documentPath = "doc/com/krrrr38/play/autodoc/Helpers.md"
+class AutodocHelpersSpec extends FunSpec with Matchers with BeforeAndAfterAll {
+  val documentPath = "doc/com/krrrr38/play/autodoc/AutodocHelpers.md"
   implicit val caller = Caller(this.getClass)
 
   override protected def beforeAll(): Unit = {
@@ -32,14 +32,14 @@ class HelpersSpec extends FunSpec with Matchers with BeforeAndAfterAll {
     case _ => throw new IllegalStateException("invalid routes")
   })
 
-  describe("Helpers#autodoc") {
+  describe("AutodocHelpers#autodoc") {
     it("generate document") {
       new WithServer(fakeApp) {
         val req = FakeRequest("GET", "/api/users/yuno")
           .withHeaders("X-Secret-Key" -> "will be hide")
           .withHeaders("X-Api-Key" -> "will be converted")
           .withHeaders("X-Public-Key" -> "PUBLIC_KEY")
-        val res = Helpers.autodoc(
+        val res = AutodocHelpers.autodoc(
           title = "GET /api/users/$name",
           requestHeaderConverter = {
             case ("X-Secret-Key", v) => None

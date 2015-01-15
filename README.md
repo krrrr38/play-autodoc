@@ -40,11 +40,11 @@ import com.krrrr38.play.autodoc.AutodocPlugin.AutodocKeys
 ```
 
 ## Usage
-- **In test**, add `import com.krrrr38.play.autodoc.Helpers._`, add `Caller` implicit, and write normal scenario tests like following.
+- **In test**, add `import com.krrrr38.play.autodoc.AutodocHelpers._`, add `Caller` implicit, and write normal scenario tests like following.
   - you can use `autodoc` to annotate test for generating documents
 
 ```scala
-import com.krrrr38.play.autodoc.Helpers._
+import com.krrrr38.play.autodoc.AutodocHelpers._
 
 implicit val caller = Caller(this.getClass)
 
@@ -66,6 +66,8 @@ implicit val caller = Caller(this.getClass)
 ```
 
 Just add `autodoc(title, description)`, before `route`.
+
+(`AutodocHelpers` trait is also existed, so you can mixin into your test helper object.)
 
 - To generate documents, run `autodoc:test` or `autodoc:testOnly ...`
 

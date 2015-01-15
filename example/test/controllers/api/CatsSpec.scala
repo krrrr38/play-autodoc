@@ -1,7 +1,7 @@
 package controllers.api
 
 import com.krrrr38.play.autodoc.Caller
-import com.krrrr38.play.autodoc.Helpers._
+import com.krrrr38.play.autodoc.AutodocHelpers._
 import controllers.api.Cats.Cat
 import org.junit.runner._
 import org.specs2.mutable._

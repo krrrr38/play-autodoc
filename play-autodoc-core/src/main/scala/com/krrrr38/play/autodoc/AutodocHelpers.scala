@@ -10,7 +10,12 @@ import scala.concurrent.Future
 /**
  * autodoc helper to use `route` in RouteInvokers
  */
-object Helpers {
+object AutodocHelpers extends AutodocHelpers
+
+/**
+ * autodoc helper to use `route` in RouteInvokers
+ */
+trait AutodocHelpers {
   /**
    * Annotate autodoc test to generate documents
    * @param title endpoint document title
