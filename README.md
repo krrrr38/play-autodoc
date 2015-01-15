@@ -21,7 +21,7 @@ Use `AutodocPlugin`(sbt plugin) to use play-autodoc-core. It provides a custom c
 ```scala
 resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
 
-addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.0.1")
+addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.0.2")
 ```
 
 ## Configuration
@@ -84,7 +84,7 @@ You need not to use `AutodocPlugin`. To use play-autodoc directory, just add dep
 ```
 resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
 
-libraryDependencies += "com.krrrr38" % "play-autodoc-core" % "0.0.1"
+libraryDependencies += "com.krrrr38" % "play-autodoc-core" % "0.0.2"
 ```
 
 To generate document, set java option `-Dplay.autodoc=true` then run test.

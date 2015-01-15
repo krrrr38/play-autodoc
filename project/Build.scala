@@ -23,7 +23,7 @@ object BuildSettings {
     com.typesafe.sbt.SbtScalariform.scalariformSettings ++ Seq(
       organization := "com.krrrr38",
       scalaVersion := "2.10.4",
-      version := "0.0.1",
+      version := "0.0.2",
       scalacOptions ++= (
         "-deprecation" ::
           "-feature" ::
@@ -42,10 +42,10 @@ object BuildSettings {
   val publishSettings = Seq(
     isSnapshot := true,
     pomExtra := {
-      <url>http://github.com/krrrr38/mackerel-client-scala</url>
+      <url>http://github.com/krrrr38/play-autodoc</url>
         <scm>
-          <url>git@github.com:krrrr38/mackerel-client-scala.git</url>
-          <connection>scm:git:git@github.com:krrrr38/mackerel-client-scala.git</connection>
+          <url>git@github.com:krrrr38/play-autodoc.git</url>
+          <connection>scm:git:git@github.com:krrrr38/play-autodoc.git</connection>
         </scm>
         <developers>
           <developer>
