@@ -47,6 +47,13 @@ object BuildSettings {
           <url>git@github.com:krrrr38/play-autodoc.git</url>
           <connection>scm:git:git@github.com:krrrr38/play-autodoc.git</connection>
         </scm>
+        <licenses>
+          <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+          </license>
+        </licenses>
         <developers>
           <developer>
             <id>krrrr38</id>
