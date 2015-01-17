@@ -21,7 +21,7 @@ Use `AutodocPlugin`(sbt plugin) to use play-autodoc-core. It provides a custom c
 ```scala
 resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
 
-addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.0.2")
+addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.0.3")
 ```
 
 ## Configuration
@@ -31,11 +31,10 @@ In `build.sbt` / `project/Build.scala`, if you want change setting
 import com.krrrr38.play.autodoc.AutodocPlugin.AutodocKeys
 
 ...
-  settings = Seq(
-    AutodocKeys.autodocOutputDirectory := "doc", // default "doc"
-    AutodocKeys.autodocSuppressedRequestHeaders := Seq("X-Secret-Token"), // default Nil
-    AutodocKeys.autodocSuppressedResponseHeaders := Nil // default Nil
-  )
+settings = Seq(
+  AutodocKeys.autodocOutputDirectory := "doc", // default "doc"
+  AutodocKeys.autodocSuppressedRequestHeaders, := Seq("X-Secret-Token"), // default Nil
+  AutodocKeys.autodocSuppressedResponseHeaders := Nil // default Nil
 )
 ```
 
@@ -75,21 +74,10 @@ On `PlayScala` activated project, you can use `autodoc` configuration which exte
 
 `autodoc:test` and `autodoc:testOnly` executes play application tests and generate document on project directory.
 
-## Minority Usage
-**If you use AutodocPlugin, you can ignore this section.**
+## Disable Autodoc
+If some PlayScala project `aggregate` other PlayScala project which you don't want to apply play-autodoc, you can prevent play-autodoc in other one to add `autodocOffSettings`.
 
-You need not to use `AutodocPlugin`. To use play-autodoc directory, just add dependency.
-
-`build.sbt`
-```
-resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
-
-libraryDependencies += "com.krrrr38" % "play-autodoc-core" % "0.0.2"
-```
-
-To generate document, set java option `-Dplay.autodoc=true` then run test.
-
-If you use `AutodocPlugin`, `play-autodoc-core` would be automatically added into your libraryDependencies.
+See example [HERE](https://github.com/krrrr38/play-autodoc/blob/master/example/project/Build.scala)
 
 ## Contribution
 
@@ -99,6 +87,13 @@ If you use `AutodocPlugin`, `play-autodoc-core` would be automatically added int
 1. Rebase your local changes against the master branch
 1. Run test suite with the `sbt test` command and confirm that it passes
 1. Create new Pull Request
+
+To check with `example` project...
+
+1. Change play-autodoc version in `project/Build.scala`
+1. `publishLocal`
+1. Change play-autodoc version in `example/project/plugins.sbt`
+1. run example project with sbt on `example` directory.
 
 ## Author
 

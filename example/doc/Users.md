@@ -49,7 +49,6 @@ Content-Type: application/json; charset=utf-8
 ```
 
 ## POST /api/users
-create user
 
 ### Example
 

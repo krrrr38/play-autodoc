@@ -36,7 +36,6 @@ class UsersSpec extends Specification {
     "create user" in new WithApplication {
       val res = autodoc(
         title = "POST /api/users",
-        description = "create user",
         requestHeaderConverter = {
           case (key, value) if key == "X-API-Token" => Some("YOUR_API_TOKEN")
           case (key, value) => Some(value)

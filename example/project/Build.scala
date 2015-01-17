@@ -17,11 +17,21 @@ object PlayScalaBuild extends Build {
           "-Xlint" ::
           Nil
         ),
-      resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/",
       AutodocKeys.autodocOutputDirectory := "doc",
       AutodocKeys.autodocSuppressedRequestHeaders := Seq("X-Secret-Token"),
       AutodocKeys.autodocSuppressedResponseHeaders := Nil
     )
+  ).enablePlugins(play.PlayScala).aggregate(another)
+
+  // this project enable PlayScala plugin, but add autodocOffSettings so not be applied play-autodoc
+  lazy val another = Project(
+    "play-scala-another",
+    file("another"),
+    settings = Defaults.coreDefaultSettings ++
+      com.krrrr38.play.autodoc.AutodocPlugin.autodocOffSettings ++
+      Seq(
+        scalaVersion := "2.10.4"
+      )
   ).enablePlugins(play.PlayScala)
 }
 

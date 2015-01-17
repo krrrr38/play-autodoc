@@ -74,6 +74,14 @@ object AutodocPlugin extends sbt.AutoPlugin {
     (javaOptions in Test) += "-Dplay.autodoc=true"
   ))
 
+  // To prevent autodoc setting in PlayPlugin enabled project, add this setting to it
+  lazy val autodocOffSettings = inConfig(Autodoc)(Seq(
+    test := (test in Test),
+    testOnly := (testOnly in Test),
+    testQuick := (testQuick in Test),
+    (javaOptions in Test) += "-Dplay.autodoc=false"
+  ))
+
   object Tasks {
     def confGen(logger: Logger, resourceDir: File, outputDir: String, cacheDir: String, supReqHeaders: Seq[String], supResHeaders: Seq[String]): File = {
       val conf = resourceDir / confFile

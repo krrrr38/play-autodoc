@@ -1,6 +1,5 @@
 @(title: String, description: Option[String], request: Request, response: Response)
-## @title
-@description
+## @title@description.map("\n"+_).getOrElse("")
 
 ### Example
 
