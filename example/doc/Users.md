@@ -2,8 +2,6 @@
 ## GET /api/users
 get all users
 
-### Example
-
 #### Request
 ```
 GET /api/users HTTP/1.1
@@ -28,8 +26,6 @@ Content-Type: application/json; charset=utf-8
 ## GET /api/users/:name
 find user
 
-### Example
-
 #### Request
 ```
 GET /api/users/yuno HTTP/1.1
@@ -49,8 +45,6 @@ Content-Type: application/json; charset=utf-8
 ```
 
 ## POST /api/users
-
-### Example
 
 #### Request
 ```
