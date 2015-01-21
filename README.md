@@ -21,11 +21,11 @@ Use `AutodocPlugin`(sbt plugin) to use play-autodoc-core. It provides a custom c
 ```scala
 resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
 
-addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.0.3")
+addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.0.4")
 ```
 
 ## Configuration
-In `build.sbt` / `project/Build.scala`, if you want change setting
+if you want to change setting, write followings in `build.sbt` / `project/Build.scala`...
 
 ```scala
 import com.krrrr38.play.autodoc.AutodocPlugin.AutodocKeys
