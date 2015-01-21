@@ -12,10 +12,6 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
 
-import scala.language.existentials
-
-case class Caller(clazz: Class[_])
-
 private[autodoc] case class Document[T](
     title: String,
     description: Option[String],

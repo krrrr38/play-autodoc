@@ -45,7 +45,7 @@ settings = Seq(
 ```scala
 import com.krrrr38.play.autodoc.AutodocHelpers._
 
-implicit val caller = Caller(this.getClass)
+implicit val caller = AutodocCaller(this.getClass)
 
 "return user list" in new WithApplication {
   val res = autodoc("GET /api/users", "get all users")

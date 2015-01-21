@@ -1,5 +1,3 @@
-import com.krrrr38.play.autodoc.Caller
-import com.krrrr38.play.autodoc.AutodocHelpers._
 import controllers.api.Users.User
 import org.junit.runner._
 import org.specs2.mutable._
@@ -8,10 +6,13 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
 
+// call your TestHelper which mixin AutodocHelper trait
+import TestHelper._
+
 @RunWith(classOf[JUnitRunner])
 class UsersSpec extends Specification {
 
-  implicit val caller = Caller(this.getClass)
+  implicit val caller = AutodocCaller(this.getClass)
 
   "UsersController" should {
 

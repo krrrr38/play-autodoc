@@ -7,6 +7,14 @@ import play.api.test._
 
 import scala.concurrent.Future
 
+import scala.language.existentials
+
+/**
+ * request caller class wrapper
+ * @param clazz
+ */
+case class Caller(clazz: Class[_])
+
 /**
  * autodoc helper to use `route` in RouteInvokers
  */
@@ -16,6 +24,14 @@ object AutodocHelpers extends AutodocHelpers
  * autodoc helper to use `route` in RouteInvokers
  */
 trait AutodocHelpers {
+
+  /**
+   * Define `autodoc` caller class
+   * @param clazz
+   * @return
+   */
+  def AutodocCaller(clazz: Class[_]) = Caller(clazz)
+
   /**
    * Annotate autodoc test to generate documents
    * @param title endpoint document title

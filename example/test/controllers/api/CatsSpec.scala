@@ -1,7 +1,5 @@
 package controllers.api
 
-import com.krrrr38.play.autodoc.Caller
-import com.krrrr38.play.autodoc.AutodocHelpers._
 import controllers.api.Cats.Cat
 import org.junit.runner._
 import org.specs2.mutable._
@@ -9,10 +7,13 @@ import org.specs2.runner._
 import play.api.test.Helpers._
 import play.api.test._
 
+// it is possible to import AutodocHelpers object directly
+import com.krrrr38.play.autodoc.AutodocHelpers._
+
 @RunWith(classOf[JUnitRunner])
 class CatsSpec extends Specification {
 
-  implicit val caller = Caller(this.getClass)
+  implicit val caller = AutodocCaller(this.getClass)
 
   "CatsController" should {
 
