@@ -34,7 +34,8 @@ import com.krrrr38.play.autodoc.AutodocPlugin.AutodocKeys
 settings = Seq(
   AutodocKeys.autodocOutputDirectory := "doc", // default "doc"
   AutodocKeys.autodocSuppressedRequestHeaders, := Seq("X-Secret-Token"), // default Nil
-  AutodocKeys.autodocSuppressedResponseHeaders := Nil // default Nil
+  AutodocKeys.autodocSuppressedResponseHeaders := Nil, // default Nil
+  AutodocKeys.autodocTocForGitHub := true // default false
 )
 ```
 

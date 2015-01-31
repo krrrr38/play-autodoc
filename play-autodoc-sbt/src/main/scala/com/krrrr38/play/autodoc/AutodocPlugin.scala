@@ -10,6 +10,7 @@ object AutodocPlugin extends sbt.AutoPlugin {
     val autodocCacheDirectory = taskKey[String]("Before generating documents, output them into cache directory, then merge them") // XXX to be settingKey?
     val autodocSuppressedRequestHeaders = settingKey[Seq[String]]("Prevent to show request header in autodoc document")
     val autodocSuppressedResponseHeaders = settingKey[Seq[String]]("Prevent to show response header in autodoc document")
+    val autodocTocForGitHub = settingKey[Boolean]("Add toc menu in document top")
     val autodocConfGen = taskKey[File]("Generate autodoc configuration.")
     val autodocSaveSetting = taskKey[Unit]("Save setting in autodoc")
     val autodocCleanCache = taskKey[Unit]("delete autodoc cache directory")
@@ -21,6 +22,7 @@ object AutodocPlugin extends sbt.AutoPlugin {
     val autodocCacheDirectory: String = "target/autodoc-cache"
     val autodocSuppressedRequestHeaders: Seq[String] = Nil
     val autodocSuppressedResponseHeaders: Seq[String] = Nil
+    val autodocTocForGitHub: Boolean = false
   }
 
   lazy val Autodoc = config("autodoc") extend Test
@@ -38,7 +40,10 @@ object AutodocPlugin extends sbt.AutoPlugin {
     libraryDependencies += "com.krrrr38" %% "play-autodoc-core" % (autodocVersion in Autodoc).value % "test"
   )
 
-  case class AutodocSetting(outputDir: String = AutodocDefaults.autodocOutputDirectory, cacheDir: String = AutodocDefaults.autodocCacheDirectory)
+  case class AutodocSetting(
+    outputDir: String = AutodocDefaults.autodocOutputDirectory,
+    cacheDir: String = AutodocDefaults.autodocCacheDirectory,
+    enableGithubLikeTocMenu: Boolean = AutodocDefaults.autodocTocForGitHub)
   var setting = AutodocSetting()
 
   val confFile = "autodoc.conf"
@@ -51,7 +56,7 @@ object AutodocPlugin extends sbt.AutoPlugin {
       autodocSuppressedRequestHeaders.value,
       autodocSuppressedResponseHeaders.value
     ),
-    autodocSaveSetting := { setting = AutodocSetting(autodocOutputDirectory.value, autodocCacheDirectory.value) },
+    autodocSaveSetting := { setting = AutodocSetting(autodocOutputDirectory.value, autodocCacheDirectory.value, autodocTocForGitHub.value) },
     autodocCleanCache := Tasks.deleteFile(baseDirectory.value, autodocCacheDirectory.value),
     autodocClean := {
       Tasks.deleteFile(baseDirectory.value, autodocOutputDirectory.value)
@@ -62,14 +67,15 @@ object AutodocPlugin extends sbt.AutoPlugin {
     autodocCacheDirectory := IO.relativize(baseDirectory.value, target(_ / "autodoc-cache").value).getOrElse(AutodocDefaults.autodocCacheDirectory),
     autodocSuppressedRequestHeaders := (autodocSuppressedRequestHeaders ?? AutodocDefaults.autodocSuppressedRequestHeaders).value,
     autodocSuppressedResponseHeaders := (autodocSuppressedResponseHeaders ?? AutodocDefaults.autodocSuppressedResponseHeaders).value,
+    autodocTocForGitHub := (autodocTocForGitHub ?? AutodocDefaults.autodocTocForGitHub).value,
     test <<= test.result.map { result => // XXX is it possible to get outputdir and cachedir setting values in here?
-      Tasks.moveFile(file(setting.cacheDir), file(setting.outputDir))
+      Tasks.shallowMove(file(setting.cacheDir), file(setting.outputDir), setting.enableGithubLikeTocMenu)
     } dependsOn (autodocClean, autodocConfGen, autodocSaveSetting),
     testOnly <<= testOnly.mapR { result => // XXX InputKey cannot call `result`...
-      Tasks.shallowMove(file(setting.cacheDir), file(setting.outputDir))
+      Tasks.shallowMove(file(setting.cacheDir), file(setting.outputDir), setting.enableGithubLikeTocMenu)
     } dependsOn (autodocCleanCache, autodocConfGen, autodocSaveSetting),
     testQuick <<= testQuick.mapR { result => // XXX InputKey cannot call `result`...
-      Tasks.shallowMove(file(setting.cacheDir), file(setting.outputDir))
+      Tasks.shallowMove(file(setting.cacheDir), file(setting.outputDir), setting.enableGithubLikeTocMenu)
     } dependsOn (autodocCleanCache, autodocConfGen, autodocSaveSetting),
     (javaOptions in Test) += "-Dplay.autodoc=true"
   ))
@@ -103,23 +109,64 @@ object AutodocPlugin extends sbt.AutoPlugin {
 
     // compare fromDir and toDir, move fromDir contents to toDir.
     // if no equivalent toDir contents in fromDir, they would be kept.
-    def shallowMove(fromDir: File, toDir: File): Unit = {
-      def shallowMoveR(fromFile: File, toFile: File): Unit = fromFile.listFiles().foreach { _fromFile =>
-        val _toFile = toFile / _fromFile.name
-        (_toFile.exists, _toFile.isDirectory, _fromFile.isDirectory) match {
-          case (false, _,     _)     => moveFile(_fromFile, _toFile)
-          case (true,  false, _)     => moveFile(_fromFile, _toFile)
-          case (true,  true,  false) => moveFile(_fromFile, _toFile)
-          case (true,  true,  true)  => shallowMoveR(_fromFile, _toFile)
-        }
+    def shallowMove(fromDir: File, toDir: File, withToc: Boolean): Unit = {
+      def shallowMoveFile(fromFile: File, toFile: File): Unit = {
+        if (toFile.exists())
+          IO.delete(toFile)
+        if (withToc)
+          IO.write(toFile, GitHubMarkdown.addToc(fromFile))
+        else
+          moveFile(fromFile, toFile)
       }
-      if (fromDir.exists && fromDir.isDirectory) {
-        if (toDir.exists) {
-          shallowMoveR(fromDir, toDir)
-          IO.delete(fromDir)
-        } else {
-          moveFile(fromDir, toDir)
+      def shallowMoveR(fromFileOrDir: File, toFileOrDir: File): Unit = (fromFileOrDir.isDirectory, toFileOrDir.exists(), toFileOrDir.isDirectory) match {
+        case (false, _, _) =>
+          shallowMoveFile(fromFileOrDir, toFileOrDir)
+        case (true, false, _) =>
+          toFileOrDir.mkdirs()
+          fromFileOrDir.listFiles.foreach( _fromFile => shallowMoveR(_fromFile, toFileOrDir / _fromFile.name))
+        case (true, true, false) =>
+          toFileOrDir.delete()
+          toFileOrDir.mkdirs()
+          fromFileOrDir.listFiles.foreach( _fromFile => shallowMoveR(_fromFile, toFileOrDir / _fromFile.name))
+        case (true, true, true) =>
+          fromFileOrDir.listFiles.foreach( _fromFile => shallowMoveR(_fromFile, toFileOrDir / _fromFile.name))
+      }
+
+      if (fromDir.exists())
+        shallowMoveR(fromDir, toDir)
+    }
+
+    object GitHubMarkdown {
+      def addToc(file: File): String = {
+        val contents = IO.read(file)
+        val toc = genrateToc(contents)
+        toc + contents
+      }
+
+      def genrateToc(contents: String): String = {
+        val idCounter = scala.collection.mutable.Map.empty[String, Int]
+        // covert space to `-`, delete other symbols except `-` and `_`
+        // if same id is existed, add `-index` to last
+        def convertToGithubHashName(line: String): String = {
+          val base = line.replaceAll("\\s", "-").replaceAll("""[!"#\$%&'\(\)\*\+,\.\/:;<=>\?@\[\\\]^`{\|}~]""", "")
+          val maybeIndex: Option[Int] = {
+            val maybeIndex = idCounter.get(base)
+            maybeIndex match {
+              case Some(index) => idCounter += (base -> (index+1))
+              case None => idCounter += (base -> 1)
+            }
+            maybeIndex
+          }
+          maybeIndex.map(index => s"user-content-$base-$index").getOrElse(s"user-content-$base")
         }
+        val toc = contents.split("\n")
+          .filter(_.startsWith("## "))
+          .map { titleLine =>
+          val title = titleLine.dropWhile(_ == '#').trim
+          val id = convertToGithubHashName(title.toLowerCase)
+          s"  - [$title](#$id)"
+        }.mkString("\n")
+        s"## API Documentation\n- Table of Contents\n$toc\n"
       }
     }
   }
