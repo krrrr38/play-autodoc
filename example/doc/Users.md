@@ -1,3 +1,8 @@
+## API Documentation
+- Table of Contents
+  - [GET /api/users](#user-content-get-apiusers)
+  - [GET /api/users/:name](#user-content-get-apiusersname)
+  - [POST /api/users](#user-content-post-apiusers)
 
 ## GET /api/users
 get all users

@@ -19,7 +19,8 @@ object PlayScalaBuild extends Build {
         ),
       AutodocKeys.autodocOutputDirectory := "doc",
       AutodocKeys.autodocSuppressedRequestHeaders := Seq("X-Secret-Token"),
-      AutodocKeys.autodocSuppressedResponseHeaders := Nil
+      AutodocKeys.autodocSuppressedResponseHeaders := Nil,
+      AutodocKeys.autodocTocForGitHub := true
     )
   ).enablePlugins(play.PlayScala).aggregate(another)
 

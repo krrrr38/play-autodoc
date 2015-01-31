@@ -54,7 +54,3 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
-
-
-# doc directry is used for testing
-doc/
