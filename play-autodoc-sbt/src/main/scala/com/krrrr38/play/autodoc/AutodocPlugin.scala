@@ -47,37 +47,38 @@ object AutodocPlugin extends sbt.AutoPlugin {
   var setting = AutodocSetting()
 
   val confFile = "autodoc.conf"
-  lazy val autodocSettings = inConfig(Autodoc)(Seq(
-    autodocConfGen := Tasks.confGen(
-      streams.value.log,
-      resourceDirectory.value,
-      autodocOutputDirectory.value,
-      autodocCacheDirectory.value,
-      autodocSuppressedRequestHeaders.value,
-      autodocSuppressedResponseHeaders.value
-    ),
-    autodocSaveSetting := { setting = AutodocSetting(autodocOutputDirectory.value, autodocCacheDirectory.value, autodocTocForGitHub.value) },
-    autodocCleanCache := Tasks.deleteFile(baseDirectory.value, autodocCacheDirectory.value),
-    autodocClean := {
-      Tasks.deleteFile(baseDirectory.value, autodocOutputDirectory.value)
-      Tasks.deleteFile(resourceDirectory.value, confFile)
-    },
-    autodocVersion := AutodocVersion.value,
-    autodocOutputDirectory := (autodocOutputDirectory ?? AutodocDefaults.autodocOutputDirectory).value,
-    autodocCacheDirectory := IO.relativize(baseDirectory.value, target(_ / "autodoc-cache").value).getOrElse(AutodocDefaults.autodocCacheDirectory),
-    autodocSuppressedRequestHeaders := (autodocSuppressedRequestHeaders ?? AutodocDefaults.autodocSuppressedRequestHeaders).value,
-    autodocSuppressedResponseHeaders := (autodocSuppressedResponseHeaders ?? AutodocDefaults.autodocSuppressedResponseHeaders).value,
-    autodocTocForGitHub := (autodocTocForGitHub ?? AutodocDefaults.autodocTocForGitHub).value,
-    test <<= test.result.map { result => // XXX is it possible to get outputdir and cachedir setting values in here?
+  lazy val autodocSettings = inConfig(Autodoc)(Defaults.testTasks ++
+    Seq(
+      autodocConfGen := Tasks.confGen(
+        streams.value.log,
+        resourceDirectory.value,
+        autodocOutputDirectory.value,
+        autodocCacheDirectory.value,
+        autodocSuppressedRequestHeaders.value,
+        autodocSuppressedResponseHeaders.value
+      ),
+      autodocSaveSetting := { setting = AutodocSetting(autodocOutputDirectory.value, autodocCacheDirectory.value, autodocTocForGitHub.value) },
+      autodocCleanCache := Tasks.deleteFile(baseDirectory.value, autodocCacheDirectory.value),
+      autodocClean := {
+        Tasks.deleteFile(baseDirectory.value, autodocOutputDirectory.value)
+        Tasks.deleteFile(resourceDirectory.value, confFile)
+      },
+      autodocVersion := AutodocVersion.value,
+      autodocOutputDirectory := (autodocOutputDirectory ?? AutodocDefaults.autodocOutputDirectory).value,
+      autodocCacheDirectory := IO.relativize(baseDirectory.value, target(_ / "autodoc-cache").value).getOrElse(AutodocDefaults.autodocCacheDirectory),
+      autodocSuppressedRequestHeaders := (autodocSuppressedRequestHeaders ?? AutodocDefaults.autodocSuppressedRequestHeaders).value,
+      autodocSuppressedResponseHeaders := (autodocSuppressedResponseHeaders ?? AutodocDefaults.autodocSuppressedResponseHeaders).value,
+      autodocTocForGitHub := (autodocTocForGitHub ?? AutodocDefaults.autodocTocForGitHub).value,
+      test <<= (test in Autodoc).result.map { result => // XXX is it possible to get outputdir and cachedir setting values in here?
       Tasks.shallowMove(file(setting.cacheDir), file(setting.outputDir), setting.enableGithubLikeTocMenu)
     } dependsOn (autodocClean, autodocConfGen, autodocSaveSetting),
-    testOnly <<= testOnly.mapR { result => // XXX InputKey cannot call `result`...
+    testOnly <<= (testOnly in Autodoc).mapR { result => // XXX InputKey cannot call `result`...
       Tasks.shallowMove(file(setting.cacheDir), file(setting.outputDir), setting.enableGithubLikeTocMenu)
     } dependsOn (autodocCleanCache, autodocConfGen, autodocSaveSetting),
-    testQuick <<= testQuick.mapR { result => // XXX InputKey cannot call `result`...
+    testQuick <<= (testQuick in Autodoc).mapR { result => // XXX InputKey cannot call `result`...
       Tasks.shallowMove(file(setting.cacheDir), file(setting.outputDir), setting.enableGithubLikeTocMenu)
     } dependsOn (autodocCleanCache, autodocConfGen, autodocSaveSetting),
-    (javaOptions in Test) += "-Dplay.autodoc=true"
+    javaOptions ++= Seq("-Dplay.autodoc=true")
   ))
 
   // To prevent autodoc setting in PlayPlugin enabled project, add this setting to it
@@ -85,7 +86,7 @@ object AutodocPlugin extends sbt.AutoPlugin {
     test := (test in Test),
     testOnly := (testOnly in Test),
     testQuick := (testQuick in Test),
-    (javaOptions in Test) += "-Dplay.autodoc=false"
+    javaOptions += "-Dplay.autodoc=false"
   ))
 
   object Tasks {

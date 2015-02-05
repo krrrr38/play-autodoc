@@ -5,7 +5,7 @@ import java.io.File
 import com.typesafe.config.ConfigFactory
 import play.api.{ Configuration, Logger }
 
-import scala.util.{ Properties, Try }
+import scala.util.Try
 
 object AutodocConfiguration {
   val CONFIG_FILE_NAME = "/autodoc.conf"
@@ -61,7 +61,7 @@ object AutodocConfiguration {
       converter(header).map(value => (header._1, value))
     }
 
-  def enable: Boolean = isTrue(Properties.propOrNone("play.autodoc").getOrElse(""))
+  def enable: Boolean = isTrue(sys.props.get("play.autodoc").getOrElse(""))
 
   private def isTrue(str: String): Boolean =
     str.trim.nonEmpty && str != "0" && str != "false"
