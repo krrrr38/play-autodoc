@@ -13,7 +13,7 @@ import play.api.test.Helpers._
 
 class AutodocHelpersSpec extends FunSpec with Matchers with BeforeAndAfterAll {
   val documentPath = "doc/com/krrrr38/play/autodoc/AutodocHelpers.md"
-  implicit val caller = Caller(this.getClass)
+  implicit val caller = com.krrrr38.play.autodoc.AutodocHelpers.AutodocCaller(this.getClass)
 
   override protected def beforeAll(): Unit = {
     System.setProperty("play.autodoc", "1")

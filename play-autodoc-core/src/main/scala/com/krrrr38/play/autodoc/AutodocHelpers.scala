@@ -10,12 +10,6 @@ import scala.concurrent.Future
 import scala.language.existentials
 
 /**
- * request caller class wrapper
- * @param clazz
- */
-case class Caller(clazz: Class[_])
-
-/**
  * autodoc helper to use `route` in RouteInvokers
  */
 object AutodocHelpers extends AutodocHelpers
@@ -24,13 +18,11 @@ object AutodocHelpers extends AutodocHelpers
  * autodoc helper to use `route` in RouteInvokers
  */
 trait AutodocHelpers {
-
   /**
-   * Define `autodoc` caller class
+   * request caller class wrapper
    * @param clazz
-   * @return
    */
-  def AutodocCaller(clazz: Class[_]) = Caller(clazz)
+  case class AutodocCaller(clazz: Class[_])
 
   /**
    * Annotate autodoc test to generate documents
@@ -45,7 +37,7 @@ trait AutodocHelpers {
     title: String = "",
     description: String = "",
     requestHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]] = IDENTITY_HEADER_CONVERTER,
-    responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]] = IDENTITY_HEADER_CONVERTER)(implicit caller: Caller): RecordableRouteInvoker = {
+    responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]] = IDENTITY_HEADER_CONVERTER)(implicit caller: AutodocCaller): RecordableRouteInvoker = {
     val maybeTitle = if (title.trim.nonEmpty) Some(title) else None
     val maybeDescription = if (description.trim.nonEmpty) Some(description) else None
     new RecordableRouteInvoker(caller, maybeTitle, maybeDescription, requestHeaderConverter, responseHeaderConverter)
@@ -59,7 +51,7 @@ trait AutodocHelpers {
   }
 
   private[autodoc] class RecordableRouteInvoker(
-      caller: Caller,
+      caller: AutodocCaller,
       maybeTitle: Option[String],
       maybeDescription: Option[String],
       requestHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]],

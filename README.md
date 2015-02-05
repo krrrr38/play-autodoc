@@ -40,7 +40,7 @@ settings = Seq(
 ```
 
 ## Usage
-- **In test**, add `import com.krrrr38.play.autodoc.AutodocHelpers._`, add `Caller` implicit, and write normal scenario tests like following.
+- **In test**, add `import com.krrrr38.play.autodoc.AutodocHelpers._`, add `AutodocCaller` implicit, and write normal scenario tests like following.
   - you can use `autodoc` to annotate test for generating documents
 
 ```scala
