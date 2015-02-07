@@ -63,7 +63,13 @@ trait AutodocHelpers {
         val packageName = Option(caller.clazz.getPackage).map(_.getName).getOrElse("")
         val className = caller.clazz.getSimpleName
         maybeResult.foreach(_.map { result =>
-          val title = maybeTitle.getOrElse(s"${rh.method} ${rh.path}")
+          val title = maybeTitle.getOrElse {
+            if (rh.rawQueryString.isEmpty) {
+              s"${rh.method} ${rh.path}"
+            } else {
+              s"${rh.method} ${rh.path}?${rh.rawQueryString}"
+            }
+          }
           Document(title, maybeDescription, rh, body, result, requestHeaderConverter, responseHeaderConverter).write(packageName, className)
           result
         })

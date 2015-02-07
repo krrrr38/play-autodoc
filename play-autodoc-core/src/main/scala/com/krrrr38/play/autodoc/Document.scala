@@ -70,7 +70,12 @@ object Request {
       case AnyContentAsJson(json) => Json.prettyPrint(json)
       case content => new String(w.transform(content))
     }, "\n\n")
-    Request(rh.method, rh.path, rh.version, headers, body)
+    val pathWithQuery = if (rh.rawQueryString.isEmpty) {
+      rh.path
+    } else {
+      s"${rh.path}?${rh.rawQueryString}"
+    }
+    Request(rh.method, pathWithQuery, rh.version, headers, body)
   }
 }
 
