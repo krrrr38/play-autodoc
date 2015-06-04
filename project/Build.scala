@@ -9,11 +9,12 @@ object Resolvers {
 
 object Dependencies {
   // for autodoc-sbt
-  val playPlugin = "com.typesafe.play" % "sbt-plugin" % System.getProperty("play.version", "2.3.4")
+  val playPlugin = "com.typesafe.play" %% "sbt-plugin" % System.getProperty("play.version", "2.4.0")
 
   // for autodoc-core
-  val playTest = "com.typesafe.play" %% "play-test" % System.getProperty("play.version", "2.3.4")
-  val scalaTest = "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+  val playTest = "com.typesafe.play" %% "play-test" % System.getProperty("play.version", "2.4.0")
+  val scalaTest = "org.scalatest" %% "scalatest" % "2.2.5" % "test"
+  val scalaTestPlus = "org.scalatestplus" %% "play" % "1.4.0-M2" % "test"
 }
 
 object BuildSettings {
@@ -22,8 +23,8 @@ object BuildSettings {
   val buildSettings =
     com.typesafe.sbt.SbtScalariform.scalariformSettings ++ Seq(
       organization := "com.krrrr38",
-      scalaVersion := "2.10.4",
-      version := "0.1.1",
+      scalaVersion := "2.10.5",
+      version := "0.2.0",
       scalacOptions ++= (
         "-deprecation" ::
           "-feature" ::
@@ -91,10 +92,10 @@ object PlayAutodocBuild extends Build {
     settings = buildSettings ++ publishSettings ++ Seq(
       name := "play-autodoc-core",
       description := "Generate documentation from your play application request tests.",
-      crossScalaVersions := scalaVersion.value :: "2.11.4" :: Nil,
+      crossScalaVersions := scalaVersion.value :: "2.11.6" :: Nil,
       resolvers += typesafe,
       libraryDependencies ++= Seq(
-        playTest, scalaTest
+        playTest, scalaTest, scalaTestPlus
       ),
       TwirlKeys.templateImports ++= Seq(
         "com.krrrr38.play.autodoc.{ Request, Response }"

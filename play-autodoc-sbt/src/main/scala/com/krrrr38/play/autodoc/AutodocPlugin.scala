@@ -31,7 +31,7 @@ object AutodocPlugin extends sbt.AutoPlugin {
 
   override def trigger: PluginTrigger = allRequirements
 
-  override def requires: Plugins = play.PlayScala
+  override def requires: Plugins = play.sbt.PlayScala
 
   override def projectConfigurations: Seq[Configuration] = Seq(Autodoc)
 

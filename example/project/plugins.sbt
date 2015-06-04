@@ -4,6 +4,6 @@ resolvers ++= Seq(
 )
 
 // The Play plugin
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.7")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.0")
 
-addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.1.1")
+addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "0.2.0")
