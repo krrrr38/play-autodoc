@@ -14,8 +14,8 @@ Play 2.x Scala port of [autodoc](https://github.com/r7kamura/autodoc/)
 Generate documentation from your Play application.
 
 - See example
-  - [Generated Document](https://github.com/krrrr38/play-autodoc/blob/master/example/doc/Users.md)
-  - [Autodoc Test](https://github.com/krrrr38/play-autodoc/blob/master/example/test/UsersSpec.scala)
+  - [Generated Document](https://github.com/krrrr38/play-autodoc/blob/2.4.x/example/doc/Users.md)
+  - [Autodoc Test](https://github.com/krrrr38/play-autodoc/blob/2.4.x/example/test/UsersSpec.scala)
 
 ## Install with sbt plugin
 Use `AutodocPlugin`(sbt plugin) to use play-autodoc-core. It provides a custom configuration for generating documents.
@@ -83,14 +83,14 @@ On `PlayScala` activated project, you can use `autodoc` configuration which exte
 ## Disable Autodoc
 If some PlayScala project `aggregate` other PlayScala project which you don't want to apply play-autodoc, you can prevent play-autodoc in other one to add `autodocOffSettings`.
 
-See example [HERE](https://github.com/krrrr38/play-autodoc/blob/master/example/project/Build.scala)
+See example [HERE](https://github.com/krrrr38/play-autodoc/blob/2.4.x/example/project/Build.scala)
 
 ## Contribution
 
 1. Fork ([https://github.com/krrrr38/play-autodoc/fork](https://github.com/krrrr38/play-autodoc/fork))
 1. Create a feature branch
 1. Commit your changes
-1. Rebase your local changes against the master branch
+1. Rebase your local changes against the target version branch
 1. Run test suite with the `sbt test` command and confirm that it passes
 1. Create new Pull Request
 
