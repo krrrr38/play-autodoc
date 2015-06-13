@@ -24,8 +24,6 @@ Use `AutodocPlugin`(sbt plugin) to use play-autodoc-core. It provides a custom c
 
 `project/plugins.sbt`
 ```scala
-resolvers += "Maven Repository on Github" at "http://krrrr38.github.io/maven/"
-
 addSbtPlugin("com.krrrr38" % "play-autodoc-sbt" % "version")
 ```
 
