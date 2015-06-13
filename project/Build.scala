@@ -18,7 +18,9 @@ object Dependencies {
 }
 
 object BuildSettings {
-  import scala.Console.{ CYAN, RESET }
+
+  import xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName
+  import scala.Console.{CYAN, RESET}
 
   val buildSettings =
     com.typesafe.sbt.SbtScalariform.scalariformSettings ++ Seq(
@@ -37,11 +39,13 @@ object BuildSettings {
           Seq("-Ywarn-unused", "-Ywarn-unused-import")
         else
           Nil
-      }
+      },
+      shellPrompt := { state => s"$CYAN${name.value}$RESET > " }
     )
 
   val publishSettings = Seq(
-    isSnapshot := true,
+    isSnapshot := false,
+    sonatypeProfileName := "com.krrrr38",
     pomExtra := {
       <url>http://github.com/krrrr38/play-autodoc</url>
         <scm>
@@ -65,23 +69,12 @@ object BuildSettings {
     },
     publishArtifact in Test := false,
     publishMavenStyle := true,
-    shellPrompt := { state => s"$CYAN${name.value}$RESET > " },
-    publishTo := {
-      val ghpageMavenDir: Option[String] =
-        if((Process("which ghq") #>> new java.io.File("/dev/null")).! == 0) {
-          (Process("ghq list --full-path") #| Process("grep krrrr38/maven")).lines.headOption
-        } else None
-      ghpageMavenDir.map { dirPath =>
-        Resolver.file(
-          organization.value,
-          file(dirPath)
-        )(Patterns(true, Resolver.mavenStyleBasePattern))
-      }
-    }
+    pomIncludeRepository := { _ => false }
   )
 }
 
 object PlayAutodocBuild extends Build {
+
   import BuildSettings._
   import Resolvers._
   import Dependencies._
@@ -121,7 +114,7 @@ object PlayAutodocBuild extends Build {
     "root",
     file("."),
     settings = Defaults.coreDefaultSettings ++ Seq(
-      shellPrompt := { status => "There are no contents on root project, see `projects` to change project\n> "},
+      shellPrompt := { status => "There are no contents on root project, see `projects` to change project\n> " },
       packagedArtifacts := Map.empty // prevent publishing
     )
   ).aggregate(autodoc, autodocPlugin)
