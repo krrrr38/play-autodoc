@@ -20,8 +20,13 @@ class AutodocHelpersSpec extends FunSpec with Matchers with BeforeAndAfterAll {
   }
 
   override protected def afterAll(): Unit = {
-    new File("doc").delete
+    delete(new File("doc"))
     System.setProperty("play.autodoc", "0")
+  }
+
+  def delete(file: File) {
+    if (file.isDirectory) Option(file.listFiles).map(_.toList).getOrElse(Nil).foreach(delete(_))
+    file.delete
   }
 
   def fakeApp = FakeApplication(withRoutes = {
@@ -48,6 +53,7 @@ class AutodocHelpersSpec extends FunSpec with Matchers with BeforeAndAfterAll {
           }
         ).route(req).get
         status(res) shouldBe OK
+        Thread.sleep(100)
 
         val doc = new File(documentPath)
         doc.exists() shouldBe true
