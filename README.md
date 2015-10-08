@@ -18,6 +18,8 @@ Generate documentation from your Play application.
   - [Autodoc Test](https://github.com/krrrr38/play-autodoc/blob/master/2.3.x/test/UsersSpec.scala)
 
 ## Install with sbt plugin
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.krrrr38/play-autodoc-sbt/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.krrrr38/play-autodoc-sbt)
+
 Use `AutodocPlugin`(sbt plugin) to use play-autodoc-core. It provides a custom configuration for generating documents.
 
 - Setup sbt plugin and play-autodoc configuration
