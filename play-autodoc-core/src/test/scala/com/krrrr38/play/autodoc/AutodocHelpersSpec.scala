@@ -3,11 +3,14 @@ package com.krrrr38.play.autodoc
 import java.io.File
 
 import play.api.libs.json.Json
-import play.api.mvc.{ Results, Action }
+import play.api.libs.iteratee.{ Enumerator, Iteratee }
+import play.api.mvc.{ Results, Action, Result, ResponseHeader }
 import play.api.test._
 import play.api.test.Helpers._
 import org.scalatest._
 import org.scalatestplus.play._
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 class AutodocHelpersSpec extends FunSpec with Matchers with BeforeAndAfterAll with OneServerPerSuite {
   val documentPath = "doc/com/krrrr38/play/autodoc/AutodocHelpers.md"
@@ -17,6 +20,13 @@ class AutodocHelpersSpec extends FunSpec with Matchers with BeforeAndAfterAll wi
     case ("GET", "/api/users/yuno") =>
       Action { req =>
         Results.Ok(Json.obj("user" -> Json.obj("name" -> "yuno", "height" -> 144)))
+      }
+    case ("GET", "/api/bytes") =>
+      Action { req =>
+        Result(
+          header = ResponseHeader(200, Map(CONTENT_TYPE -> "application/x-bytes")),
+          body = Enumerator("bytes-data".getBytes)
+        )
       }
     case _ => throw new IllegalStateException("invalid routes")
   })
@@ -59,6 +69,24 @@ class AutodocHelpersSpec extends FunSpec with Matchers with BeforeAndAfterAll wi
       contents should not include ("X-Secret-Key")
       contents should include("X-Api-Key: YOUR_API_KEY")
       contents should include("X-Public-Key: PUBLIC_KEY")
+    }
+
+    it("generate document in the case of byte array response") {
+      val req = FakeRequest("GET", "/api/bytes")
+      val res = AutodocHelpers.autodoc(
+        title = "GET /api/bytes",
+        responseBodyParser = (result: Result) => {
+          new String(Await.result(result.body |>>> Iteratee.consume[Array[Byte]](), Duration.Inf), "utf-8")
+        }
+      ).route(req).get
+      status(res) shouldBe OK
+      Thread.sleep(100)
+
+      val doc = new File(documentPath)
+      doc.exists() shouldBe true
+      val contents = scala.io.Source.fromFile(doc).getLines().mkString("\n")
+      contents should include("## GET /api/bytes")
+      contents should include("bytes-data")
     }
   }
 
