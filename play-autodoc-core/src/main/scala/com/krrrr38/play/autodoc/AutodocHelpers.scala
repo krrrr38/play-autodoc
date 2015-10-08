@@ -30,6 +30,7 @@ trait AutodocHelpers {
    * @param description endpoint document description
    * @param requestHeaderConverter condition for suppressing or converting header keys and values. if return None, not output target header.
    * @param responseHeaderConverter condition for suppressing or converting header keys and values. if return None, not output target header.
+   * @param responseBodyParser convert response result into String.
    * @param caller caller class to detect which controller treats this endpoint
    * @return
    */
@@ -37,10 +38,11 @@ trait AutodocHelpers {
     title: String = "",
     description: String = "",
     requestHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]] = IDENTITY_HEADER_CONVERTER,
-    responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]] = IDENTITY_HEADER_CONVERTER)(implicit caller: AutodocCaller): RecordableRouteInvoker = {
+    responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]] = IDENTITY_HEADER_CONVERTER,
+    responseBodyParser: (Result) => String = Response.DEFAULT_BODY_PARSER)(implicit caller: AutodocCaller): RecordableRouteInvoker = {
     val maybeTitle = if (title.trim.nonEmpty) Some(title) else None
     val maybeDescription = if (description.trim.nonEmpty) Some(description) else None
-    new RecordableRouteInvoker(caller, maybeTitle, maybeDescription, requestHeaderConverter, responseHeaderConverter)
+    new RecordableRouteInvoker(caller, maybeTitle, maybeDescription, requestHeaderConverter, responseHeaderConverter, responseBodyParser)
   }
 
   /**
@@ -55,7 +57,8 @@ trait AutodocHelpers {
       maybeTitle: Option[String],
       maybeDescription: Option[String],
       requestHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]],
-      responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]]) extends Writeables with RouteInvokers with DefaultAwaitTimeout {
+      responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]],
+      responseBodyParser: (Result) => String) extends Writeables with RouteInvokers with DefaultAwaitTimeout {
     import scala.concurrent.ExecutionContext.Implicits.global
     override def route[T](app: Application, rh: RequestHeader, body: T)(implicit w: Writeable[T]): Option[Future[Result]] = {
       val maybeResult = super.route(app, rh, body)
@@ -70,7 +73,7 @@ trait AutodocHelpers {
               s"${rh.method} ${rh.path}?${rh.rawQueryString}"
             }
           }
-          Document(title, maybeDescription, rh, body, result, requestHeaderConverter, responseHeaderConverter).write(packageName, className)
+          Document(title, maybeDescription, rh, body, result, requestHeaderConverter, responseHeaderConverter, responseBodyParser).write(packageName, className)
           result
         })
       }

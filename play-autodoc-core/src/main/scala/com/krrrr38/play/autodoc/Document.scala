@@ -2,13 +2,13 @@ package com.krrrr38.play.autodoc
 
 import java.io.{ File, FileWriter }
 
-import akka.util.Timeout
 import play.api.http.{ HeaderNames, MimeTypes, Writeable }
 import play.api.libs.iteratee.Iteratee
 import play.api.libs.json.Json
 import play.api.mvc.{ AnyContentAsJson, RequestHeader, Result }
 
 import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
 
@@ -19,9 +19,10 @@ private[autodoc] case class Document[T](
     origBody: T,
     result: Result,
     requestHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]],
-    responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]]) {
-  def write(packageName: String, className: String)(implicit w: Writeable[T], timeout: Timeout): Unit = {
-    val content = load(title, description, requestHeader, origBody, result, requestHeaderConverter, responseHeaderConverter)
+    responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]],
+    responseBodyParser: (Result) => String) {
+  def write(packageName: String, className: String)(implicit w: Writeable[T]): Unit = {
+    val content = load(title, description, requestHeader, origBody, result, requestHeaderConverter, responseHeaderConverter, responseBodyParser)
 
     val outputDir =
       if (packageName.trim.isEmpty) {
@@ -49,9 +50,10 @@ private[autodoc] case class Document[T](
     origBody: T,
     result: Result,
     requestHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]],
-    responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]])(implicit w: Writeable[T], timeout: Timeout): String = {
+    responseHeaderConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]],
+    responseBodyParser: (Result) => String)(implicit w: Writeable[T]): String = {
     val request = Request.parse(rh, origBody, requestHeaderConverter)
-    val response = Response.parse(result, responseHeaderConverter)
+    val response = Response.parse(result, responseHeaderConverter, responseBodyParser)
     com.krrrr38.play.autodoc.templates.md.document(title, description, request, response).body
   }
 }
@@ -81,24 +83,32 @@ object Request {
 
 case class Response(status: String, headers: String, body: String)
 object Response {
-  private[autodoc] def parse(result: Result, headerConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]])(implicit timeout: Timeout): Response = {
+  private[autodoc] def parse(result: Result, headerConverter: PartialFunction[(HeaderKey, HeaderValue), Option[HeaderValue]], bodyParser: (Result) => String): Response = {
     val headers = normalizeText(
       result.header.headers
         .flatMap(kv => AutodocConfiguration.convertResponseHeader(kv, headerConverter))
         .map(kv => s"${kv._1}: ${kv._2}")
         .mkString("\n"), "\n")
+    val body = normalizeText(bodyParser(result), "\n\n")
+    Response(result.header.status.toString, headers, body)
+  }
+
+  /**
+   * default body parser
+   */
+  def DEFAULT_BODY_PARSER(result: Result): String = {
     val responseBodyGen: Iteratee[Array[Byte], StringBuilder] =
       Iteratee.fold(new StringBuilder) { (builder, bytes) =>
         builder.append(new String(bytes))
       }
     val responseBodyText =
-      Await.result(result.body.run(responseBodyGen).map { _.toString() }, timeout.duration)
-    val body = normalizeText(result.header.headers.get(HeaderNames.CONTENT_TYPE) match {
+      Await.result(result.body.run(responseBodyGen).map { _.toString() }, Duration.Inf)
+
+    result.header.headers.get(HeaderNames.CONTENT_TYPE) match {
       case Some(contentType) if contentType.startsWith(MimeTypes.JSON) =>
         Try(Json.parse(responseBodyText)).map(Json.prettyPrint) getOrElse responseBodyText
       case _ => responseBodyText
-    }, "\n\n")
-    Response(result.header.status.toString, headers, body)
+    }
   }
 }
 
