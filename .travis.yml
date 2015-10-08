@@ -1,0 +1,10 @@
+language: scala
+scala:
+  - 2.10.4
+jdk:
+  - openjdk7
+  - oraclejdk7
+  - oraclejdk8
+script: travis_retry sbt test
+notifications:
+  slack: krrrr38:TYeSnczrquLKpGVf6o6JAm8e

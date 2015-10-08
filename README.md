@@ -1,5 +1,7 @@
 Autodoc for Play 2.x
 ====
+[![Build Status](https://travis-ci.org/krrrr38/play-autodoc.svg?branch=2.3.x)](https://travis-ci.org/krrrr38/play-autodoc)
+[![Build Status](https://travis-ci.org/krrrr38/play-autodoc.svg?branch=2.4.x)](https://travis-ci.org/krrrr38/play-autodoc)
 
 Play 2.x Scala port of [autodoc](https://github.com/r7kamura/autodoc/)
 
