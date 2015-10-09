@@ -26,7 +26,7 @@ object BuildSettings {
     com.typesafe.sbt.SbtScalariform.scalariformSettings ++ Seq(
       organization := "com.krrrr38",
       scalaVersion := "2.10.5",
-      version := "0.2.0",
+      version := "0.2.1-SNAPSHOT",
       scalacOptions ++= (
         "-deprecation" ::
           "-feature" ::
