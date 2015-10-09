@@ -5,10 +5,16 @@ Play 2.x Scala port of [autodoc](https://github.com/r7kamura/autodoc/)
 
 **only support Play 2.3.x and 2.4.x**
 
-| Play version    | autodoc version | CI                                                                                                                         |
-| :-------------: |:---------------:|:--------------------------------------------------------------------------------------------------------------------------:|
-| 2.3.x           | 0.1.1           | [![Build Status](https://travis-ci.org/krrrr38/play-autodoc.svg?branch=2.3.x)](https://travis-ci.org/krrrr38/play-autodoc) |
-| 2.4.x           | 0.2.0           | [![Build Status](https://travis-ci.org/krrrr38/play-autodoc.svg?branch=2.4.x)](https://travis-ci.org/krrrr38/play-autodoc) |
+| Play version    | autodoc version | SNAPSHOT       | CI                                                                                                                         |
+| :-------------: |:---------------:|:--------------:|:--------------------------------------------------------------------------------------------------------------------------:|
+| 2.3.x           | 0.1.1           | 0.1.2-SNAPSHOT | [![Build Status](https://travis-ci.org/krrrr38/play-autodoc.svg?branch=2.3.x)](https://travis-ci.org/krrrr38/play-autodoc) |
+| 2.4.x           | 0.2.0           | 0.2.1-SNAPSHOT | [![Build Status](https://travis-ci.org/krrrr38/play-autodoc.svg?branch=2.4.x)](https://travis-ci.org/krrrr38/play-autodoc) |
+
+If you wanna use SNAPSHOT version, please Add following resolvers
+
+```scala
+resolvers += Opts.resolver.sonatypeSnapshots
+```
 
 ## Description
 Generate documentation from your Play application.
